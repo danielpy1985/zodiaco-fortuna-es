@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌟 Tu Fortuna Zodiacal 🌟</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Roboto:wght@300;400&display=swap');
+        body { font-family: 'Roboto', sans-serif; background: linear-gradient(135deg, #1e3c72, #2a5298); color: white; text-align: center; padding: 20px; margin: 0; min-height: 100vh; display: flex; align-items: center; justify-content: center; }
+        .card { max-width: 440px; margin: 0 auto; background: rgba(255,255,255,0.13); border-radius: 24px; padding: 40px 30px; box-shadow: 0 15px 40px rgba(0,0,0,0.35); backdrop-filter: blur(12px); }
+        h1 { font-family: 'Playfair Display', serif; margin: 0 0 25px; font-size: 2.3em; }
+        .sign { font-size: 5.5em; margin: 20px 0; }
+        button { background: #fff; color: #1e3c72; border: none; padding: 16px 32px; font-size: 1.1em; border-radius: 50px; cursor: pointer; margin: 15px 8px; font-weight: bold; }
+        .share-btn { background: #4ade80; color: #1e3c72; }
+        .used { color: #ffeb3b; font-size: 1.2em; }
+    </style>
+</head>
+<body>
+    <div class="card" id="content">
+        <h1>🌟 Tu Sorpresa Zodiacal 🌟</h1>
+        <div id="result"></div>
+    </div>
+
+    <script>
+        const code = new URLSearchParams(window.location.search).get('code');
+        if (!code) {
+            document.getElementById('result').innerHTML = `<p class="used">❌ Enlace inválido.<br>Contacta al vendedor.</p>`;
+        } else {
+            fetch(`/api/verify?code=${code}`)
+                .then(res => res.json())
+                .then(data => {
+                    if (data.used) {
+                        document.getElementById('result').innerHTML = `<p class="used">🎟️ Este enlace ya fue usado.<br>¡Gracias por tu compra! ✨</p>`;
+                    } else {
+                        generateFortune();
+                    }
+                })
+                .catch(() => generateFortune()); // 如果後端出問題，還是讓客戶能抽
+        }
+
+        function generateFortune() {
+            const zodiacs = [
+                { name: "Aries ♈", dates: "21 mar - 19 abr" },
+                { name: "Tauro ♉", dates: "20 abr - 20 may" },
+                { name: "Géminis ♊", dates: "21 may - 20 jun" },
+                { name: "Cáncer ♋", dates: "21 jun - 22 jul" },
+                { name: "Leo ♌", dates: "23 jul - 22 ago" },
+                { name: "Virgo ♍", dates: "23 ago - 22 sep" },
+                { name: "Libra ♎", dates: "23 sep - 22 oct" },
+                { name: "Escorpio ♏", dates: "23 oct - 21 nov" },
+                { name: "Sagitario ♐", dates: "22 nov - 21 dic" },
+                { name: "Capricornio ♑", dates: "22 dic - 19 ene" },
+                { name: "Acuario ♒", dates: "20 ene - 18 feb" },
+                { name: "Piscis ♓", dates: "19 feb - 20 mar" }
+            ];
+
+            const fortunes = [
+                "Hoy es un nuevo comienzo. Atrévete a salir de tu zona de confort y encontrarás oportunidades inesperadas.",
+                "Las relaciones traerán sorpresas positivas. Abre tu corazón y las personas adecuadas aparecerán.",
+                "Enfócate en tus metas con determinación. El éxito está más cerca de lo que piensas.",
+                "El amor y la armonía te rodean. Valora a las personas que tienes a tu lado.",
+                "Tu situación financiera mejora. Es buen momento para planificar y premiarte.",
+                "Tu mente y cuerpo necesitan equilibrio. Descansa y deja que la inspiración llegue.",
+                "El espíritu aventurero despierta. Un pequeño cambio o viaje te renovará.",
+                "Confía en tu intuición. Tu sabiduría interior te guía correctamente.",
+                "Energía positiva te acompaña. Enfrenta los desafíos con una sonrisa.",
+                "Agradece el pasado y abraza el futuro. Estás en el camino correcto."
+            ];
+
+            const randomZodiac = zodiacs[Math.floor(Math.random() * zodiacs.length)];
+            const randomFortune = fortunes[Math.floor(Math.random() * fortunes.length)];
+            const luckyNum = Math.floor(Math.random() * 99) + 1;
+
+            document.getElementById('result').innerHTML = `
+                <h2>${randomZodiac.name}</h2>
+                <p>${randomZodiac.dates}</p>
+                <div class="sign">${randomZodiac.name.split(' ')[0]}</div>
+                <p style="font-size:1.25em; line-height:1.6;">${randomFortune}</p>
+                <p style="font-size:1.8em; margin:25px 0; font-weight:bold;">Número de la suerte: ${luckyNum}</p>
+                <p>¡Esta es tu sorpresa especial! 💫</p>
+            `;
+        }
+    </script>
+</body>
+</html>
